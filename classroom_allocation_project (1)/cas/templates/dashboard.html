@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% macro liveboard() %}
+<div class="card"><div class="livehead"><h2 style="margin:0">🟢 Live Room Board</h2>
+<span class="chip">{% if cur_slot %}Now: {{ cur_slot[0] }}-{{ cur_slot[1] }}{% else %}No class in session right now{% endif %}</span></div>
+<div class="live">{% for l in live %}<div class="room {{ l.state }}"><span class="dot"></span><b>{{ l.room.roomNo }}</b>
+<small>{{ l.room.roomType }} · {{ l.room.capacity }} seats</small><small>{{ l.info if l.state=='Occupied' else l.state }}</small></div>{% endfor %}</div></div>
+{% endmacro %}
+{% block content %}
+{% if session.role == 'admin' %}
+<div class="hero"><h1>Welcome back, {{ session.name }} 👋</h1><p>Here is what is happening across all classrooms today.</p>
+<a class="btn w" href="{{ url_for('admin_rooms') }}">🚪 Manage rooms</a><a class="btn w" href="{{ url_for('timetable') }}">🗓 Timetable</a><a class="btn w" href="{{ url_for('reports') }}">📈 Reports</a></div>
+<div class="grid g3" style="margin-bottom:22px">
+<div class="stat c1"><span class="ic">🏫</span><b data-n="{{ stats.rooms }}">0</b><span>Total classrooms</span></div>
+<div class="stat c5"><span class="ic">✅</span><b data-n="{{ stats.available }}">0</b><span>Available rooms</span></div>
+<div class="stat c2"><span class="ic">👨‍🏫</span><b data-n="{{ stats.faculty }}">0</b><span>Faculty members</span></div>
+<div class="stat c3"><span class="ic">📅</span><b data-n="{{ stats.today }}">0</b><span>Classes today</span></div>
+<div class="stat c4"><span class="ic">📌</span><b data-n="{{ stats.allocated }}">0</b><span>Allocated requests</span></div>
+<div class="stat c6"><span class="ic">⛔</span><b data-n="{{ stats.rejected }}">0</b><span>Rejected requests</span></div></div>
+<div class="grid g2">
+<div class="card"><h2>📊 Bookings this week</h2><div class="bars">{% for d, n in week %}<div class="b"><div class="col" style="height:{{ (n / weekmax * 100)|round|int }}%;animation-delay:{{ loop.index0 * 0.1 }}s"><i>{{ n }}</i></div>{{ d }}</div>{% endfor %}</div></div>
+<div class="card"><h2>🍩 Request outcomes</h2><div class="donutwrap">
+<div class="donut" style="background:{% if donut.total %}conic-gradient(#43a047 0 {{ donut.a }}%,#e53935 {{ donut.a }}% {{ donut.ar }}%,#78909c {{ donut.ar }}% 100%){% else %}#e8eaf6{% endif %}"><div><span><b>{{ donut.total }}</b>requests</span></div></div>
+<div class="legend"><div><i style="background:#43a047"></i>Allocated: <b>{{ donut.allocated }}</b></div><div><i style="background:#e53935"></i>Rejected: <b>{{ donut.rejected }}</b></div><div><i style="background:#78909c"></i>Cancelled: <b>{{ donut.cancelled }}</b></div></div></div>
+<p class="note" style="margin:18px 0 6px">Today's room occupancy: <b>{{ occupancy }}%</b></p><div class="meter"><div style="width:{{ occupancy }}%"></div></div></div></div>
+{{ liveboard() }}
+<div class="card"><h2>🕘 Recent requests</h2><div class="tw"><table><tr><th>#</th><th>Faculty</th><th>Course</th><th>Date</th><th>Time</th><th>Status</th></tr>
+{% for r in recent %}<tr><td>{{ r.requestId }}</td><td>{{ r.fname }}</td><td>{{ r.courseCode }}</td><td>{{ r.reqDate }}</td><td>{{ r.startTime }}-{{ r.endTime }}</td><td><span class="pill {{ r.status }}">{{ r.status }}</span></td></tr>
+{% else %}<tr><td colspan="6">No requests yet.</td></tr>{% endfor %}</table></div></div>
+
+{% elif session.role == 'faculty' %}
+<div class="hero"><h1>Hello, {{ session.name }} 👋</h1><p>Request a classroom in seconds. The best-fit room is allocated automatically.</p>
+<a class="btn w" href="{{ url_for('new_request') }}">➕ Request a room</a><a class="btn w" href="{{ url_for('timetable') }}?mine=1">🗓 My timetable</a></div>
+<div class="grid g3" style="margin-bottom:22px">
+<div class="stat c5"><span class="ic">✅</span><b data-n="{{ counts.get('Allocated',0) }}">0</b><span>Allocated</span></div>
+<div class="stat c6"><span class="ic">⛔</span><b data-n="{{ counts.get('Rejected',0) }}">0</b><span>Rejected</span></div>
+<div class="stat c1"><span class="ic">↩️</span><b data-n="{{ counts.get('Cancelled',0) }}">0</b><span>Cancelled</span></div></div>
+<div class="card"><h2>📅 Your upcoming classes</h2><div class="timeline">
+{% for r in upcoming %}<div class="tl"><b>{{ r.courseCode }} - {{ r.courseName }}</b><br>📆 {{ r.reqDate }} &nbsp; ⏰ {{ r.startTime }}-{{ r.endTime }} &nbsp; 🚪 Room {{ r.roomNo }} ({{ r.building }})</div>
+{% else %}<p class="note">No upcoming bookings.</p>{% endfor %}</div></div>
+{{ liveboard() }}
+
+{% else %}
+<div class="hero"><h1>Hi, {{ session.name }} 👋</h1><p>Find where your classes are today.</p><a class="btn w" href="{{ url_for('timetable') }}">🗓 Weekly timetable</a><a class="btn w" href="{{ url_for('availability') }}">🔍 Room availability</a></div>
+<div class="card"><h2>📅 Today's classes</h2><div class="timeline">
+{% for r in classes %}<div class="tl"><b>{{ r.courseCode }} - {{ r.courseName }}</b><br>⏰ {{ r.startTime }}-{{ r.endTime }} &nbsp; 🚪 Room {{ r.roomNo }} ({{ r.building }}) &nbsp; 👨‍🏫 {{ r.fname }}</div>
+{% else %}<p class="note">No classes scheduled today.</p>{% endfor %}</div></div>
+{{ liveboard() }}
+{% endif %}
+{% endblock %}

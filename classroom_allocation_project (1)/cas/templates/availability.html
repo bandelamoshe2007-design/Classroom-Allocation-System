@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block content %}
+<h1>Room Availability</h1><p class="sub">Green = free, blue = booked, orange = under maintenance.</p>
+<form class="toolbar" method="get"><div><label>Date</label><input type="date" name="date" value="{{ d.isoformat() }}"></div><button class="btn">Show</button></form>
+{% if not day %}<div class="flash warn">Sunday is a holiday. Pick another date.</div>{% else %}
+<div class="card"><h2>{{ day }}, {{ d.isoformat() }}</h2><div class="tw"><table class="tt"><tr><th>Room</th>{% for s in slots %}<th>{{ s.startTime }}-{{ s.endTime }}</th>{% endfor %}</tr>
+{% for r in rooms %}<tr><td>{{ r.roomNo }}<br><span class="note">{{ r.roomType }} · {{ r.capacity }} seats{{ ' · 📽' if r.hasProjector }}</span></td>
+{% for s in slots %}{% if r.status != 'Available' %}<td class="mnt">Maintenance</td>{% elif booked.get((r.roomId, s.slotId)) %}<td class="busy">{{ booked[(r.roomId, s.slotId)] }}</td>{% else %}<td class="free">Free</td>{% endif %}{% endfor %}</tr>{% endfor %}</table></div></div>{% endif %}{% endblock %}

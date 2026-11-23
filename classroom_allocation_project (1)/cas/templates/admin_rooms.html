@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% block content %}
+<h1>Classrooms</h1><p class="sub">Add rooms, set maintenance status, or remove unused rooms.</p>
+<div class="card"><h2>Add classroom</h2><form method="post"><div class="row">
+<div><label>Room number</label><input name="roomNo" required></div><div><label>Building</label><input name="building" required></div>
+<div><label>Type</label><select name="roomType">{% for t in ROOM_TYPES %}<option>{{ t }}</option>{% endfor %}</select></div>
+<div><label>Capacity</label><input type="number" name="capacity" min="1" required></div></div>
+<label class="chk"><input type="checkbox" name="hasProjector"> Projector available</label><p><button class="btn g">Add room</button></p></form></div>
+<div class="card"><div class="tw"><table><tr><th>Room</th><th>Building</th><th>Type</th><th>Capacity</th><th>Projector</th><th>Status</th><th>Actions</th></tr>
+{% for r in rooms %}<tr><td><b>{{ r.roomNo }}</b></td><td>{{ r.building }}</td><td>{{ r.roomType }}</td><td>{{ r.capacity }}</td><td>{{ 'Yes' if r.hasProjector else 'No' }}</td>
+<td><span class="pill {{ r.status }}">{{ r.status }}</span></td><td style="display:flex;gap:6px">
+<form method="post" action="{{ url_for('toggle_room', rid=r.roomId) }}"><button class="btn o s">{{ 'Set maintenance' if r.status=='Available' else 'Make available' }}</button></form>
+<form method="post" action="{{ url_for('delete_room', rid=r.roomId) }}" onsubmit="return confirm('Delete this room?')"><button class="btn r s">Delete</button></form></td></tr>{% endfor %}</table></div></div>{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block title %}Register - CAS{% endblock %}
+{% block auth %}<div class="auth"><div class="card"><h1>Create Account</h1><p class="sub" style="text-align:center">Faculty and students</p>
+<form method="post">
+<label>Full name</label><input name="name" required>
+<label>Username</label><input name="username" required>
+<label>Password (min 6 characters)</label><input type="password" name="password" required minlength="6">
+<label>Role</label><select name="role" id="role" onchange="t()"><option value="faculty">Faculty</option><option value="student">Student</option></select>
+<div id="fac"><label>Department</label><input name="department"><label>Email</label><input type="email" name="email"><label>Phone</label><input name="phone"></div>
+<div id="stu" style="display:none"><label>Batch / Section</label><input name="batch" placeholder="e.g. CSE-3A"></div>
+<p><button class="btn" style="width:100%;margin-top:16px">Register</button></p></form>
+<p style="text-align:center" class="note"><a href="{{ url_for('login') }}">Back to login</a></p></div></div>
+<script>function t(){var s=document.getElementById('role').value=='student';document.getElementById('fac').style.display=s?'none':'block';document.getElementById('stu').style.display=s?'block':'none'}</script>
+{% endblock %}

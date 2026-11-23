@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block content %}
+<h1>Notifications</h1><p class="sub">Allocation results, rejections and cancellations.</p>
+<div class="card">{% for n in rows %}<div style="padding:10px 0;border-bottom:1px solid #eceff7">🔔 {{ n.message }}<br><span class="note">{{ n.sentOn }}</span></div>
+{% else %}<p>No notifications yet.</p>{% endfor %}</div>{% endblock %}

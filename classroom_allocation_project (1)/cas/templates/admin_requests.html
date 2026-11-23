@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block content %}
+<h1>All Requests</h1><p class="sub">Review every request. Admin can reject (cancel) any allocated booking.</p>
+<form class="toolbar" method="get"><div><label>Status</label><select name="status"><option value="">All</option>{% for s in ['Allocated','Rejected','Cancelled'] %}<option {{ 'selected' if status==s }}>{{ s }}</option>{% endfor %}</select></div><button class="btn">Filter</button></form>
+<div class="card"><div class="tw"><table><tr><th>#</th><th>Faculty</th><th>Course</th><th>Date</th><th>Slot</th><th>Strength</th><th>Room</th><th>Status</th><th>Note</th><th></th></tr>
+{% for r in rows %}<tr><td>{{ r.requestId }}</td><td>{{ r.fname }}</td><td>{{ r.courseCode }}</td><td>{{ r.reqDate }}</td><td>{{ r.dayOfWeek[:3] }} {{ r.startTime }}-{{ r.endTime }}</td><td>{{ r.capacityNeeded }}</td><td>{{ r.roomNo or '-' }}</td>
+<td><span class="pill {{ r.status }}">{{ r.status }}</span></td><td class="note">{{ r.reason or '' }}</td>
+<td>{% if r.status=='Allocated' %}<form method="post" action="{{ url_for('cancel', rid=r.requestId) }}" onsubmit="return confirm('Reject this booking?')"><input type="hidden" name="note" value="Rejected by administrator."><button class="btn r s">Reject</button></form>{% endif %}</td></tr>
+{% else %}<tr><td colspan="10">No requests.</td></tr>{% endfor %}</table></div></div>{% endblock %}

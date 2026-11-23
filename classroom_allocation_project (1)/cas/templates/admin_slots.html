@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block content %}
+<h1>Time Slots</h1><p class="sub">Daily periods used for allocation.</p>
+<div class="card"><form method="post"><div class="row"><div><label>Day</label><select name="dayOfWeek">{% for d in DAYS %}<option>{{ d }}</option>{% endfor %}</select></div>
+<div><label>Start</label><input type="time" name="startTime" required></div><div><label>End</label><input type="time" name="endTime" required></div></div><p><button class="btn g">Add slot</button></p></form></div>
+<div class="card"><div class="tw"><table><tr><th>Day</th><th>Start</th><th>End</th><th></th></tr>
+{% for s in slots %}<tr><td>{{ s.dayOfWeek }}</td><td>{{ s.startTime }}</td><td>{{ s.endTime }}</td>
+<td><form method="post" action="{{ url_for('delete_slot', sid=s.slotId) }}" onsubmit="return confirm('Delete slot?')"><button class="btn r s">Delete</button></form></td></tr>{% endfor %}</table></div></div>{% endblock %}

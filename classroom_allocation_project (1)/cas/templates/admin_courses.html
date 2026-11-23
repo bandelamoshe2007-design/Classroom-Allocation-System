@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block content %}
+<h1>Courses</h1><p class="sub">Courses that faculty can book rooms for.</p>
+<div class="card"><form method="post"><div class="row"><div><label>Code</label><input name="courseCode" required></div><div><label>Name</label><input name="courseName" required></div>
+<div><label>Department</label><input name="department"></div><div><label>Credits</label><input type="number" name="credits" value="3" min="1"></div></div><p><button class="btn g">Add course</button></p></form></div>
+<div class="card"><div class="tw"><table><tr><th>Code</th><th>Name</th><th>Department</th><th>Credits</th><th></th></tr>
+{% for c in courses %}<tr><td><b>{{ c.courseCode }}</b></td><td>{{ c.courseName }}</td><td>{{ c.department }}</td><td>{{ c.credits }}</td>
+<td><form method="post" action="{{ url_for('delete_course', cid=c.courseId) }}" onsubmit="return confirm('Delete course?')"><button class="btn r s">Delete</button></form></td></tr>{% endfor %}</table></div></div>{% endblock %}

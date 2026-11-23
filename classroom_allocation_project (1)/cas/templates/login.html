@@ -1,0 +1,28 @@
+{% extends "base.html" %}{% block title %}Login - Classroom Allocation System{% endblock %}
+{% block auth %}
+<div class="split">
+  <div class="left">
+    <div class="sh" style="width:120px;height:120px;top:8%;right:12%"></div>
+    <div class="sh" style="width:70px;height:70px;top:60%;right:6%;animation-delay:-3s;border-radius:50%"></div>
+    <div class="sh" style="width:180px;height:180px;bottom:-50px;left:38%;animation-delay:-5s"></div>
+    <span class="tag">🎓 SOFTWARE ENGINEERING PROJECT · TEAM 4</span>
+    <h1>Classroom<br><span>Allocation System</span></h1>
+    <p>Request a room, and the system finds the best-fit classroom automatically. No clashes, no paperwork, no confusion.</p>
+    <div class="feat">
+      <div>⚡ Automatic best-fit allocation</div><div>🛡 Instant clash detection</div>
+      <div>🗓 Live weekly timetable</div><div>📈 Utilisation reports</div>
+    </div>
+  </div>
+  <div class="right"><div class="lcard">
+    <h2>Welcome back 👋</h2><p class="lead">Sign in to your account</p>
+    <form method="post">
+      <label>Username</label><input name="username" required autofocus placeholder="Enter username" autocomplete="username">
+      <label>Password</label><input type="password" name="password" required placeholder="Enter password" autocomplete="current-password">
+      <p><button class="btn" style="width:100%;margin-top:14px;padding:13px">Sign in →</button></p>
+    </form>
+    <p class="note" style="text-align:center">New faculty or student? <a href="{{ url_for('register') }}"><b>Create account</b></a></p>
+    <div class="demo"><b>🔑 Team login</b><br>Username: <b>TEAM4</b> &nbsp;·&nbsp; Password: <b>TEAM4@123</b><br>
+    <span class="note">Other demos: ravi / faculty123 (faculty), student1 / student123 (student)</span></div>
+  </div></div>
+</div>
+{% endblock %}

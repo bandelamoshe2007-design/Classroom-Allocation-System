@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block content %}
+<h1>Users</h1><p class="sub">All registered accounts and their roles.</p>
+<div class="card"><div class="tw"><table><tr><th>Username</th><th>Name</th><th>Role</th><th>Department / Batch</th><th></th></tr>
+{% for u in users %}<tr><td>{{ u.username }}</td><td>{{ u.display_name }}</td><td><span class="pill {{ 'Allocated' if u.role=='admin' else ('Pending' if u.role=='faculty' else 'Cancelled') }}">{{ u.role }}</span></td><td>{{ u.department or u.batch or '-' }}</td>
+<td>{% if u.user_id != session.uid %}<form method="post" action="{{ url_for('delete_user', uid=u.user_id) }}" onsubmit="return confirm('Delete user?')"><button class="btn r s">Delete</button></form>{% endif %}</td></tr>{% endfor %}</table></div></div>{% endblock %}

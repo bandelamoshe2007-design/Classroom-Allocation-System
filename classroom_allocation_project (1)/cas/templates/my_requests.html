@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block content %}
+<h1>My Requests</h1><p class="sub">Track every request and cancel bookings you no longer need.</p>
+<div class="card"><div class="tw"><table><tr><th>#</th><th>Course</th><th>Date</th><th>Time</th><th>Strength</th><th>Room</th><th>Status</th><th>Note</th><th></th></tr>
+{% for r in rows %}<tr><td>{{ r.requestId }}</td><td>{{ r.courseCode }}</td><td>{{ r.reqDate }}</td><td>{{ r.startTime }}-{{ r.endTime }}</td><td>{{ r.capacityNeeded }}</td>
+<td>{{ r.roomNo ~ ' (' ~ r.building ~ ')' if r.roomNo else '-' }}</td><td><span class="pill {{ r.status }}">{{ r.status }}</span></td><td class="note">{{ r.reason or '' }}</td>
+<td>{% if r.status == 'Allocated' %}<form method="post" action="{{ url_for('cancel', rid=r.requestId) }}" onsubmit="return confirm('Cancel this booking?')"><button class="btn r s">Cancel</button></form>{% endif %}</td></tr>
+{% else %}<tr><td colspan="9">No requests yet. <a href="{{ url_for('new_request') }}">Make your first request</a>.</td></tr>{% endfor %}</table></div></div>{% endblock %}

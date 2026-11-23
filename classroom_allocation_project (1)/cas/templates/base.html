@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}Classroom Allocation System{% endblock %}</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏫</text></svg>">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body>
+<div class="flashes" id="flashes">{% with msgs = get_flashed_messages(with_categories=true) %}{% for c, m in msgs %}<div class="flash {{ c }}">{{ m }}</div>{% endfor %}{% endwith %}</div>
+{% if session.uid %}
+<div class="layout">
+<nav class="side">
+  <div class="brand"><div class="logo">🏫</div><div><b>CAS</b><small>CLASSROOM ALLOCATION</small></div></div>
+  <div class="who"><div class="av">{{ session.name[:1]|upper }}</div><div><b>{{ session.name }}</b>{{ session.role|capitalize }}</div></div>
+  {% set ep = request.endpoint %}
+  <a href="{{ url_for('dashboard') }}" class="{{ 'on' if ep=='dashboard' }}">📊 Dashboard</a>
+  {% if session.role == 'faculty' %}
+  <div class="sec">Faculty</div>
+  <a href="{{ url_for('new_request') }}" class="{{ 'on' if ep=='new_request' }}">➕ Request a Room</a>
+  <a href="{{ url_for('my_requests') }}" class="{{ 'on' if ep=='my_requests' }}">📋 My Requests</a>
+  {% endif %}
+  {% if session.role == 'admin' %}
+  <div class="sec">Administration</div>
+  <a href="{{ url_for('admin_rooms') }}" class="{{ 'on' if ep=='admin_rooms' }}">🚪 Classrooms</a>
+  <a href="{{ url_for('admin_slots') }}" class="{{ 'on' if ep=='admin_slots' }}">⏰ Time Slots</a>
+  <a href="{{ url_for('admin_courses') }}" class="{{ 'on' if ep=='admin_courses' }}">📚 Courses</a>
+  <a href="{{ url_for('admin_requests') }}" class="{{ 'on' if ep=='admin_requests' }}">🗂 All Requests</a>
+  <a href="{{ url_for('admin_users') }}" class="{{ 'on' if ep=='admin_users' }}">👥 Users</a>
+  <a href="{{ url_for('reports') }}" class="{{ 'on' if ep=='reports' }}">📈 Reports</a>
+  {% endif %}
+  <div class="sec">Everyone</div>
+  <a href="{{ url_for('availability') }}" class="{{ 'on' if ep=='availability' }}">🔍 Room Availability</a>
+  <a href="{{ url_for('timetable') }}" class="{{ 'on' if ep=='timetable' }}">🗓 Timetable</a>
+  <a href="{{ url_for('notifications') }}" class="{{ 'on' if ep=='notifications' }}">🔔 Notifications {% if unread %}<span class="badge">{{ unread }}</span>{% endif %}</a>
+  <a href="{{ url_for('logout') }}">⏻ Logout</a>
+  <div class="foot">Team 4 · Software Engineering<br>CSE · 2026-27</div>
+</nav>
+<div class="wrap">
+<div class="top"><div class="t">Classroom Allocation System</div><div class="clock"><span id="dt"></span><b id="tm"></b></div></div>
+<main class="main">{% block content %}{% endblock %}</main>
+<div class="footer">© 2026 Team 4 · Classroom Allocation System · Software Engineering Project</div>
+</div></div>
+{% else %}<div class="plain">{% block plain %}{% block auth %}{% endblock %}{% endblock %}</div>{% endif %}
+<script>
+setTimeout(function(){document.querySelectorAll('.flash').forEach(function(f){f.style.opacity=0;f.style.transform='translateX(30px)';setTimeout(function(){f.remove()},600)})},5500);
+function tick(){var n=new Date(),d=document.getElementById('dt'),t=document.getElementById('tm');if(!d)return;
+d.textContent=n.toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'short',year:'numeric'});t.textContent=n.toLocaleTimeString()}
+tick();setInterval(tick,1000);
+document.querySelectorAll('[data-n]').forEach(function(el){var end=+el.dataset.n,s=null;function st(ts){if(!s)s=ts;var p=Math.min((ts-s)/900,1);el.textContent=Math.round(end*p);if(p<1)requestAnimationFrame(st)}requestAnimationFrame(st)});
+</script></body></html>

@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% block content %}
+<h1>Weekly Timetable</h1><p class="sub">Week of {{ days[0].isoformat() }} to {{ days[-1].isoformat() }}</p>
+<form class="toolbar" method="get"><div><label>Date in week</label><input type="date" name="date" value="{{ d.isoformat() }}"></div>
+<div><label>Room</label><select name="room"><option value="">All rooms</option>{% for r in rooms %}<option value="{{ r.roomId }}" {{ 'selected' if room_f==r.roomId|string }}>{{ r.roomNo }}</option>{% endfor %}</select></div>
+{% if session.role == 'faculty' %}<label class="chk"><input type="checkbox" name="mine" value="1" {{ 'checked' if mine }}> My classes only</label>{% endif %}
+<button class="btn">Apply</button><a class="btn l" href="?date={{ prev }}">◀ Previous</a><a class="btn l" href="?date={{ nxt }}">Next ▶</a></form>
+<div class="card"><div class="tw"><table class="tt"><tr><th>Time</th>{% for dd in days %}<th>{{ DAYS[loop.index0] }}<br><span class="note">{{ dd.isoformat() }}</span></th>{% endfor %}</tr>
+{% for p in periods %}<tr><td>{{ p[0] }}-{{ p[1] }}</td>
+{% for dd in days %}{% set sid = slot_ids.get((DAYS[loop.index0], p[0], p[1])) %}<td>
+{% for c in cells.get((dd.isoformat(), sid), []) %}<div class="cell"><b>{{ c.courseCode }}</b> · {{ c.roomNo }}<br>{{ c.fname }}</div>{% endfor %}</td>{% endfor %}</tr>{% endfor %}</table></div></div>{% endblock %}

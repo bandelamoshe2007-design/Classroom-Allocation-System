@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block content %}
+<h1>Reports</h1><p class="sub">Room utilisation and request statistics.</p>
+<form class="toolbar" method="get"><div><label>From</label><input type="date" name="from" value="{{ frm }}"></div><div><label>To</label><input type="date" name="to" value="{{ to }}"></div>
+<button class="btn">Apply</button><a class="btn p" href="{{ url_for('reports_csv') }}">⬇ Download CSV</a></form>
+<div class="grid g2"><div class="card"><h2>Room utilisation (bookings)</h2>
+{% for r in per_room %}<div style="margin:8px 0"><div style="display:flex;justify-content:space-between;font-size:13px"><span><b>{{ r.roomNo }}</b> · {{ r.building }}</span><span>{{ r.n }}</span></div>
+<div class="bar" style="width:{{ (r.n / mx * 100)|round|int }}%;min-width:4px"></div></div>{% endfor %}</div>
+<div><div class="card"><h2>Requests by status</h2><table>{% for s in by_status %}<tr><td><span class="pill {{ s.status }}">{{ s.status }}</span></td><td>{{ s.n }}</td></tr>{% else %}<tr><td>No data</td></tr>{% endfor %}</table></div>
+<div class="card"><h2>Most active faculty</h2><table>{% for f in by_faculty %}<tr><td>{{ f.name }}<br><span class="note">{{ f.department }}</span></td><td>{{ f.n }}</td></tr>{% else %}<tr><td>No data</td></tr>{% endfor %}</table></div></div></div>{% endblock %}
